@@ -23,3 +23,6 @@ htmlcov/
 *,cover
 
 .vscode/*
+
+.noseids
+nosetests.xml
