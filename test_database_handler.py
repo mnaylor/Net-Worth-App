@@ -14,6 +14,10 @@ class TestDatabaseHandler(unittest.TestCase):
         new_entry = Entry('foo', 'bar', 100)
         result = self.db.upsert_entry(new_entry)
         self.assertTrue(result)
+
+        new_entry.entry_id = result
+        success = self.db.delete_entry(new_entry)
+        self.AssertTrue(success)
     
     def test_update_entry(self):
         existing_entry = Entry('foo', 'bar', 6, False, 8)

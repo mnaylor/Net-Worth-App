@@ -54,8 +54,17 @@ class DatabaseHandler(object):
 
         return entry_id
 
-    def delete_entry(self, id):
-        return True
+    def delete_entry(self, entry):
+        success = True
+        query = 'DELETE FROM entries WHERE entry_id = %s'
+        with self.conn.cursor() as cursor:
+            try:
+                cursor.execute(query, (entry.entry_id,))
+            except Exception as error:
+                print(error)
+                success = False
+
+        return success
 
     def _get_client(self):
         conn = psycopg2.connect("dbname=NetWorthCalculator user=postgres password=mozart")
