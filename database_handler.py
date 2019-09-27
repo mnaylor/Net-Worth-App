@@ -8,13 +8,6 @@ class EntryDataObject(object):
         self.amount = amount
         self.entry_id = id
 
-    def __init__(self, raw):
-        self.name = raw['name']
-        self.category = raw['category']
-        self.is_asset = raw['is_asset']
-        self.amount = raw['amount']
-        self.entry_id = raw['entry_id'] if 'entry_id' in raw else None
-
     def to_json(self):
         return {
             'name': self.name,
@@ -67,12 +60,12 @@ class DatabaseHandler(object):
 
         return entry_id
 
-    def delete_entry(self, entry):
+    def delete_entry(self, entry_id):
         success = True
         query = 'DELETE FROM entries WHERE entry_id = %s'
         with self._get_cursor() as cursor:
             try:
-                cursor.execute(query, (entry.entry_id,))
+                cursor.execute(query, (entry_id,))
             except Exception as error:
                 print(error)
                 success = False
