@@ -43,8 +43,7 @@ class EntryPost(Resource):
             entry.entry_id = entry_id
             return entry.to_json()
         else:
-            # mnaylor TODO return an error
-            return {}
+            api.abort(500, 'Server failed to upsert entry.')
 
 if __name__ == '__main__':
     app.run(debug=True)
