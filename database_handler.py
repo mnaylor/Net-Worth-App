@@ -1,12 +1,19 @@
 import psycopg2
 
-class Entry(object):
+class EntryDataObject(object):
     def __init__(self, name, category, amount, is_asset=True, id=None):
         self.name = name
         self.category = category
         self.is_asset = is_asset
         self.amount = amount
         self.entry_id = id
+
+    def __init__(self, raw):
+        self.name = raw['name']
+        self.category = raw['category']
+        self.is_asset = raw['is_asset']
+        self.amount = raw['amount']
+        self.entry_id = raw['entry_id'] if 'entry_id' in raw else None
 
     def to_json(self):
         return {
@@ -28,7 +35,7 @@ class DatabaseHandler(object):
                 print(error)
                 raise error
 
-        results = [Entry(row[1], row[2], row[4], row[3], row[0]).to_json() for row in rows]
+        results = [EntryDataObject(row[1], row[2], row[4], row[3], row[0]).to_json() for row in rows]
         return results
 
     def upsert_entry(self, entry):

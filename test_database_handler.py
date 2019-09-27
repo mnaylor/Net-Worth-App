@@ -1,6 +1,6 @@
 import unittest
 
-from database_handler import DatabaseHandler, Entry
+from database_handler import DatabaseHandler, EntryDataObject
 
 class TestDatabaseHandler(unittest.TestCase):
     def setUp(self):
@@ -11,17 +11,22 @@ class TestDatabaseHandler(unittest.TestCase):
         self.assertTrue(results)
 
     def test_new_entry(self):
-        new_entry = Entry('foo', 'bar', 100)
+        new_entry = EntryDataObject('foo', 'bar', 100)
         result = self.db.upsert_entry(new_entry)
         self.assertTrue(result)
 
         # cleanup
         new_entry.entry_id = result
         self.db.delete_entry(new_entry)
+
+    def test_invalid_entry(self):
+        new_entry = EntryDataObject('foo', 'bar', 'amount')
+        result = self.db.upsert_entry(new_entry)
+        self.assertFalse(result)
     
     def test_delete_entry(self):
         # setup
-        new_entry = Entry('foo', 'bar', 100)
+        new_entry = EntryDataObject('foo', 'bar', 100)
         result = self.db.upsert_entry(new_entry)
 
         new_entry.entry_id = result
@@ -29,7 +34,7 @@ class TestDatabaseHandler(unittest.TestCase):
         self.assertTrue(success)
 
     def test_update_entry(self):
-        existing_entry = Entry('foo', 'bar', 6, False, 8)
+        existing_entry = EntryDataObject('foo', 'bar', 6, False, 8)
         result = self.db.upsert_entry(existing_entry)
         self.assertTrue(result)
 
