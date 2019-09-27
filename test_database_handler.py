@@ -16,8 +16,7 @@ class TestDatabaseHandler(unittest.TestCase):
         self.assertTrue(result)
 
         # cleanup
-        new_entry.entry_id = result
-        self.db.delete_entry(new_entry)
+        self.db.delete_entry(result)
 
     def test_invalid_entry(self):
         new_entry = EntryDataObject('foo', 'bar', 'amount')
@@ -29,8 +28,7 @@ class TestDatabaseHandler(unittest.TestCase):
         new_entry = EntryDataObject('foo', 'bar', 100)
         result = self.db.upsert_entry(new_entry)
 
-        new_entry.entry_id = result
-        success = self.db.delete_entry(new_entry)
+        success = self.db.delete_entry(result)
         self.assertTrue(success)
 
     def test_update_entry(self):

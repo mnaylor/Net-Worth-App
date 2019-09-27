@@ -6,7 +6,6 @@ from database_handler import DatabaseHandler, EntryDataObject
 app = Flask(__name__)
 api = Api(app)
 
-#namespace = api.namespace('Entries', description='Entry operations')
 entry_model = api.model('Entry', {
     'entry_id': fields.Integer(readonly=True, description='The entry unique identifier'),
     'name': fields.String(required=True, description='The entry name'),
@@ -25,9 +24,12 @@ class EntryList(Resource):
 @api.route('/entry/<string:entry_id>')
 class EntryDelete(Resource):
     def delete(self, entry_id):
-        print('foo')
-        # delete all the things
-        return {}
+        db = DatabaseHandler()
+        success = db.delete_entry(entry_id)
+        if success:
+            return '', 204
+        else:
+            api.abort(500, 'Server failed to upsert entry.')
 
 @api.route('/entry')
 class EntryPost(Resource):
@@ -35,13 +37,15 @@ class EntryPost(Resource):
     @api.marshal_with(entry_model)
     def post(self):
         data = api.payload
-        entry = EntryDataObject(data)
+        entry = EntryDataObject(data['name'], data['category'],
+                                data['amount'], data['is_asset'],
+                                data['entry_id'] if 'entry_id' in data else None)
 
         db = DatabaseHandler()
         entry_id = db.upsert_entry(entry)
         if entry_id:
             entry.entry_id = entry_id
-            return entry.to_json()
+            return entry.to_json(), 201
         else:
             api.abort(500, 'Server failed to upsert entry.')
 

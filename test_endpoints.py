@@ -40,7 +40,16 @@ class TestEndpoints(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_delete(self):
-        response = requests.delete('{}/entry/{}'.format(self.base_url, 2))
+        entry = {
+            'name': 'to delete',
+            'category': 'bar',
+            'is_asset': True,
+            'amount': 100
+        }
+        response = requests.post('{}/entry'.format(self.base_url), json=entry)
+
+        entry_id = response.json()['entry_id']
+        response = requests.delete('{}/entry/{}'.format(self.base_url, entry_id))
         self.assertTrue(response)
 
 if __name__ == '__main__':
