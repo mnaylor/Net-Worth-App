@@ -1,15 +1,16 @@
 from flask import Flask, request
 from flask_restplus import Resource, Api, fields
 
+from database_handler import DatabaseHandler, Entry
+
 app = Flask(__name__)
 api = Api(app)
-
-TEMP_DATABASE = []
 
 @api.route('/entries')
 class Entries(Resource):
     def get(self):
-        return TEMP_DATABASE
+        db = DatabaseHandler()
+        return db.get_entries()
 
 @api.route('/entry/<string:entry_id>')
 class Entry(Resource):
