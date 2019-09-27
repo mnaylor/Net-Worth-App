@@ -17,8 +17,27 @@ class TestEndpoints(unittest.TestCase):
             'is_asset': True,
             'amount': 100
         }
-        response = requests.post('{}/entry'.format(self.base_url), entry)
+        response = requests.post('{}/entry'.format(self.base_url), json=entry)
         self.assertTrue(response)
+
+    def test_missing_param_post(self):
+        entry = {
+            'name': 'foo',
+            'category': 'bar',
+            'is_asset': True
+        }
+        response = requests.post('{}/entry'.format(self.base_url), json=entry)
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_param_post(self):
+        entry = {
+            'name': 'foo',
+            'category': 'bar',
+            'is_asset': True,
+            'amount': -100
+        }
+        response = requests.post('{}/entry'.format(self.base_url), json=entry)
+        self.assertEqual(response.status_code, 400)
 
     def test_delete(self):
         response = requests.delete('{}/entry/{}'.format(self.base_url, 2))

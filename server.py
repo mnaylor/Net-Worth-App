@@ -6,18 +6,18 @@ from database_handler import DatabaseHandler, EntryDataObject
 app = Flask(__name__)
 api = Api(app)
 
-namespace = api.namespace('Entries', description='Entry operations')
+#namespace = api.namespace('Entries', description='Entry operations')
 entry_model = api.model('Entry', {
     'entry_id': fields.Integer(readonly=True, description='The entry unique identifier'),
     'name': fields.String(required=True, description='The entry name'),
     'category': fields.String(required=True, description='The entry category'),
     'is_asset': fields.Boolean(required=True, description='If asset, True, else False'),
-    'amount': fields.Integer(required=True, description='The entry amount')
+    'amount': fields.Integer(required=True, min=0, description='The entry amount')
 })
 
 @api.route('/entries')
-class Entries(Resource):
-    @namespace.marshal_list_with(entry_model)
+class EntryList(Resource):
+    @api.marshal_list_with(entry_model)
     def get(self):
         db = DatabaseHandler()
         return db.get_entries()
@@ -31,16 +31,20 @@ class EntryDelete(Resource):
 
 @api.route('/entry')
 class EntryPost(Resource):
-    @namespace.expect(entry_model)
-    @namespace.marshal_with(entry_model)
+    @api.expect(entry_model, validate=True)
+    @api.marshal_with(entry_model)
     def post(self):
-        data = request.form
+        data = api.payload
         entry = EntryDataObject(data)
 
         db = DatabaseHandler()
         entry_id = db.upsert_entry(entry)
-        entry.entry_id = entry_id
-        return entry.to_json()
+        if entry_id:
+            entry.entry_id = entry_id
+            return entry.to_json()
+        else:
+            # mnaylor TODO return an error
+            return {}
 
 if __name__ == '__main__':
     app.run(debug=True)
