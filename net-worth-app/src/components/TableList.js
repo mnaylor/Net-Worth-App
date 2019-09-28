@@ -10,7 +10,15 @@ class TableList extends Component {
                 name: "Some asset",
                 category: "Savings",
                 is_asset: true,
-                amount: 1
+                amount: 1,
+                id: 0
+            }],
+            liabilities: [{
+                name: "Some liability",
+                category: "mortgage",
+                is_asset: false,
+                amount: 1,
+                id: 1
             }],
             searchString: ''
         }
@@ -28,6 +36,9 @@ class TableList extends Component {
                     <Grid container spacing={10} style={{padding: 24}}>
                         <Grid item xs={12} sm={6} lg={4} xl={3}>
                             <Table entries={this.state.assets} is_asset={true} />
+                        </Grid>
+                        <Grid item xs={12} sm={6} lg={4} xl={3}>
+                            <Table entries={this.state.liabilities} is_asset={false} />
                         </Grid>
                     </Grid>
                 </div>
