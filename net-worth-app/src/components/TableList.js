@@ -31,9 +31,10 @@ class TableList extends Component {
     getEntries = () => {
         axios.get(entries_url)
         .then(res => {
-          const entries = res.data;
-          this.setState({'assets': res.data})
-          //this.setState({ persons });
+          const assets = res.data.filter(entry => entry['is_asset']);
+          const liabilities = res.data.filter(entry => !entry['is_asset']);
+          
+          this.setState({'assets': assets, 'liabilities': liabilities});
         })
     }
 
