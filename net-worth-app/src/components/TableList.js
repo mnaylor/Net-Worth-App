@@ -1,8 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
-import Table from '../components/Table'
+import Table from '../components/Table';
 
-class TableList extends Component {    
+const entries_url = 'http://localhost:5000/entries';
+
+class TableList extends Component {
     constructor() {
         super()
         this.state = {
@@ -26,7 +29,12 @@ class TableList extends Component {
     }
     
     getEntries = () => {
-        console.log(this.state)
+        axios.get(entries_url)
+        .then(res => {
+          const entries = res.data;
+          this.setState({'assets': res.data})
+          //this.setState({ persons });
+        })
     }
 
     render() {
