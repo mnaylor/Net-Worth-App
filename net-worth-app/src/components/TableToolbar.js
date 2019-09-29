@@ -54,16 +54,16 @@ class TableToolbar extends Component {
     render() {
         return (
             <div>
-                <Grid container spacing={10} style={{padding: 24}}>
-                    <Grid item xs={12} sm={6} lg={4} xl={3}>
+                <Grid container spacing={5} style={{padding: 5}} justify="flex-start">
+                    <Grid item xs>
                         <Typography variant="h6" color="inherit">
                             {this.props.is_asset ? 'Assets': 'Liabilities'}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} xl={3}>
+                    <Grid item xs>
                         <IconButton aria-label="add"
-                        onClick={this.handleClickOpen}>
-                            <AddBoxIcon />
+                            onClick={this.handleClickOpen}>
+                                <AddBoxIcon />
                         </IconButton>
                     </Grid>
                 </Grid>
@@ -99,7 +99,6 @@ class TableToolbar extends Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
-
             </div>
         )
     }

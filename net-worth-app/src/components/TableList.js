@@ -31,10 +31,10 @@ class TableList extends Component {
             <div>
                 <div>
                     <Grid container spacing={10} style={{padding: 24}}>
-                        <Grid item xs={12} sm={6} lg={4} xl={3}>
+                        <Grid item xs>
                             <Table entries={this.state.assets} is_asset={true} />
                         </Grid>
-                        <Grid item xs={12} sm={6} lg={4} xl={3}>
+                        <Grid item xs>
                             <Table entries={this.state.liabilities} is_asset={false} />
                         </Grid>
                     </Grid>
