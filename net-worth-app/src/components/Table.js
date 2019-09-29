@@ -16,6 +16,59 @@ class Table extends Component {
     console.log(this.state);
   }
 
+  postEntry = (newData) => {
+    return new Promise((resolve, reject) => {
+      newData['is_asset'] = this.props.is_asset;
+      try {
+        newData['amount'] = Number(newData['amount']);
+      }
+      catch(error) {
+        reject();
+      }
+
+      axios.post(entries_url, newData)
+      .then(response => {
+        const data = this.props.entries;
+        data.push(response.data);
+        this.setState({ entries: data }, () => resolve());
+        resolve();
+      })
+      .catch(error => {
+        // mnaylor TODO: something about the error
+        console.log(error);
+        reject();
+      })
+    })
+  }
+
+  updateEntry = (newData) => {
+    return new Promise((resolve, reject) => {
+      try {
+        newData['amount'] = Number(newData['amount']);
+      }
+      catch(error) {
+        reject();
+      }
+
+      axios.post(entries_url, newData)
+      .then(response => {
+        const data = this.props.entries;
+        const location = data.findIndex(entry =>
+          entry['entry_id'] === response.data['entry_id']
+        );
+        data[location] = response.data;
+        this.setState({ entries: data }, () => resolve());
+        resolve();
+      })
+      .catch(error => {
+        // mnaylor TODO: something about the error
+        console.log(error);
+        reject();
+      })
+    })
+  }
+
+
   render() {
     return (
       <MaterialTable
@@ -29,41 +82,8 @@ class Table extends Component {
           pageSize: 10
         }}
         editable={{
-          onRowAdd: newData =>
-            new Promise((resolve, reject) => {
-              newData['is_asset'] = this.props.is_asset;
-              try {
-                newData['amount'] = Number(newData['amount']);
-              }
-              catch(error) {
-                reject();
-              }
-
-              axios.post(entries_url, newData)
-              .then(response => {
-                const data = this.props.entries;
-                data.push(response.data);
-                this.setState({ entries: data }, () => resolve());
-                resolve();
-              })
-              .catch(error => {
-                // mnaylor TODO: something about the error
-                console.log(error);
-                reject();
-              })
-            }),
-          onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                {
-                  const data = this.state.data;
-                  const index = data.indexOf(oldData);
-                  data[index] = newData;
-                  this.setState({ data }, () => resolve());
-                }
-                resolve()
-              }, 1000)
-            }),
+          onRowAdd: this.postEntry,
+          onRowUpdate: this.updateEntry,
           onRowDelete: oldData =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
