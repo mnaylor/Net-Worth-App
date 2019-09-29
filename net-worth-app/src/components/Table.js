@@ -14,6 +14,7 @@ const entries_url = 'http://localhost:5000/entry';
 class Table extends Component {
   constructor() {
     super();
+    this.postEntry = this.postEntry.bind(this)
   }
 
   sumEntries = (entries) => {
@@ -29,7 +30,7 @@ class Table extends Component {
     this.setState({sum: sum})
   }
 
-  postEntry = (newData, foo, bar) => {
+  postEntry = (newData) => {
     return new Promise((resolve, reject) => {
       newData['is_asset'] = this.props.is_asset;
       try {
@@ -121,7 +122,7 @@ class Table extends Component {
           Groupbar: GroupBar,
           Toolbar: props => (
             <div>
-             <TableToolbar title={this.props.is_asset ? 'Assets': 'Liabilities'} />
+             <TableToolbar is_asset={this.props.is_asset} postEntry={this.postEntry} />
             </div>
           )
         }}
