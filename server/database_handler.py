@@ -22,7 +22,7 @@ class DatabaseHandler(object):
         results = []
         with self._get_cursor() as cursor:
             try:
-                cursor.execute('SELECT * FROM entries;')
+                cursor.execute('SELECT * FROM entries ORDER BY entry_id;')
                 rows = cursor.fetchall()
             except Exception as error:
                 print(error)
