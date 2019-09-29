@@ -6,7 +6,7 @@ import TableToolbar from '../components/TableToolbar';
 const columns = [
   { title: 'Name', field: 'name' },
   { title: 'Category', field: 'category', defaultGroupOrder: 0 },
-  { title: 'Amount', field: 'amount', type: 'currency' }
+  { title: 'Amount', field: 'display_amount', type: 'currency' }
 ]
 
 const entries_url = 'http://localhost:5000/entry';

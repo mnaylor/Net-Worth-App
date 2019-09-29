@@ -36,7 +36,7 @@ class CurrencyConverter extends Component {
 
   changeCurrency = event => {
       this.setState({currentExchange: event.target.value})
-      this.handleClose();
+      this.props.updateCurrency(this.state.exchangeRates[event.target.value])
   }
 
   render() {
@@ -44,7 +44,8 @@ class CurrencyConverter extends Component {
         <Grid container>
             <Grid item xs>
                 <FormControl component="fieldset">
-                <RadioGroup row aria-label="currency" name="currency" value={this.state.currentExchange} onChange={this.changeCurrency}>
+                <RadioGroup row aria-label="currency" name="currency" value={this.state.currentExchange} 
+                            onChange={this.changeCurrency}>
                     <FormControlLabel value="USDUSD" control={<Radio />} label="USD" />
                     <FormControlLabel value="USDCAD" control={<Radio />} label="CAD" />
                 </RadioGroup>

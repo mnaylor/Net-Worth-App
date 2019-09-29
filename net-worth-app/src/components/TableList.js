@@ -11,26 +11,44 @@ class TableList extends Component {
         super()
         this.state = {
             assets: [],
-            liabilities: []
+            liabilities: [],
+            currentExchangeRate: 1
         }
         this.getEntries()
+        this.updateCurrency = this.updateCurrency.bind(this)
+    }
+
+    updateCurrency = exchangeRate => {
+        this.setState({
+            currentExchangeRate: exchangeRate,
+            assets: this.addDisplayAmount(this.state.assets, exchangeRate),
+            liabilites: this.addDisplayAmount(this.state.liabilities, exchangeRate)
+        });
     }
     
     getEntries = () => {
         // mnaylor TODO handle error case
         axios.get(entries_url)
         .then(res => {
-          const assets = res.data.filter(entry => entry['is_asset']);
-          const liabilities = res.data.filter(entry => !entry['is_asset']);
+          var data = this.addDisplayAmount(res.data, this.state.currentExchangeRate);
+          const assets = data.filter(entry => entry['is_asset']);
+          const liabilities = data.filter(entry => !entry['is_asset']);
 
           this.setState({'assets': assets, 'liabilities': liabilities});
+        })
+    }
+
+    addDisplayAmount = (data, multiplier) => {
+        return data.map(entry => {
+            entry['display_amount'] = entry['amount'] * multiplier;
+            return entry;
         })
     }
 
     render() {
         return (
             <div>
-                <CurrencyConverter></CurrencyConverter>
+                <CurrencyConverter updateCurrency={this.updateCurrency}></CurrencyConverter>
                 <div>
                     <Grid container spacing={10} style={{padding: 24}}>
                         <Grid item xs>
