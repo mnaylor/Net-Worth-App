@@ -12,6 +12,8 @@ class TableList extends Component {
         this.state = {
             assets: [],
             liabilities: [],
+            sumAssets: 0,
+            sumLiabilities: 0,
             currentExchangeRate: 1
         }
         this.getEntries()
@@ -22,7 +24,9 @@ class TableList extends Component {
         this.setState({
             currentExchangeRate: exchangeRate,
             assets: this.addDisplayAmount(this.state.assets, exchangeRate),
-            liabilites: this.addDisplayAmount(this.state.liabilities, exchangeRate)
+            liabilites: this.addDisplayAmount(this.state.liabilities, exchangeRate),
+            sumAssets: this.sumEntries(this.state.assets),
+            sumLiabilities: this.sumEntries(this.state.liabilities)
         });
     }
     
@@ -34,9 +38,26 @@ class TableList extends Component {
           const assets = data.filter(entry => entry['is_asset']);
           const liabilities = data.filter(entry => !entry['is_asset']);
 
-          this.setState({'assets': assets, 'liabilities': liabilities});
+          this.setState({
+              'assets': assets, 
+              'liabilities': liabilities,
+              'sumAssets': this.sumEntries(assets),
+              'sumLiabilities': this.sumEntries(liabilities)
+            });
         })
     }
+
+    sumEntries = (entries) => {
+        var sum = 0;
+        if (entries) {
+          sum = entries.reduce(
+            function (accumulator, currentValue) 
+            {
+              return accumulator + currentValue.display_amount;
+            }, 0);
+        }
+        return sum;
+      }
 
     addDisplayAmount = (data, multiplier) => {
         return data.map(entry => {
@@ -52,10 +73,10 @@ class TableList extends Component {
                 <div>
                     <Grid container spacing={10} style={{padding: 24}}>
                         <Grid item xs>
-                            <Table entries={this.state.assets} is_asset={true} />
+                            <Table entries={this.state.assets} is_asset={true} sum={this.state.sumAssets} />
                         </Grid>
                         <Grid item xs>
-                            <Table entries={this.state.liabilities} is_asset={false} />
+                            <Table entries={this.state.liabilities} is_asset={false} sum={this.state.sumLiabilities} />
                         </Grid>
                     </Grid>
                 </div>

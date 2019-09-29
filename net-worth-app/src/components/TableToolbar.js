@@ -61,6 +61,11 @@ class TableToolbar extends Component {
                         </Typography>
                     </Grid>
                     <Grid item xs>
+                        <Typography variant="h6" color="inherit">
+                            Total = {this.props.sum}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs>
                         <IconButton aria-label="add"
                             onClick={this.handleClickOpen}>
                                 <AddBoxIcon />

@@ -17,19 +17,6 @@ class Table extends Component {
     this.postEntry = this.postEntry.bind(this)
   }
 
-  sumEntries = (entries) => {
-    var sum = 0;
-    if (entries) {
-      sum = entries.reduce(
-        function (accumulator, currentValue) 
-        {
-          return accumulator + currentValue.x;
-        }, 0);
-    }
-
-    this.setState({sum: sum})
-  }
-
   postEntry = (newData) => {
     return new Promise((resolve, reject) => {
       newData['is_asset'] = this.props.is_asset;
@@ -122,7 +109,7 @@ class Table extends Component {
           Groupbar: GroupBar,
           Toolbar: props => (
             <div>
-             <TableToolbar is_asset={this.props.is_asset} postEntry={this.postEntry} />
+             <TableToolbar is_asset={this.props.is_asset} postEntry={this.postEntry} sum={this.props.sum} />
             </div>
           )
         }}
