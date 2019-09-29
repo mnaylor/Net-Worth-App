@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import MaterialTable from "material-table"
-import axios from 'axios'
+import MaterialTable, {MTableToolbar} from "material-table";
+import axios from 'axios';
+import TableToolbar from '../components/TableToolbar';
 
 const columns = [
   { title: 'Name', field: 'name' },
-  { title: 'Category', field: 'category' },
+  { title: 'Category', field: 'category', defaultGroupOrder: 0 },
   { title: 'Amount', field: 'amount', type: 'numeric' }
 ]
 
@@ -13,10 +14,22 @@ const entries_url = 'http://localhost:5000/entry';
 class Table extends Component {
   constructor() {
     super();
-    console.log(this.state);
   }
 
-  postEntry = (newData) => {
+  sumEntries = (entries) => {
+    var sum = 0;
+    if (entries) {
+      sum = entries.reduce(
+        function (accumulator, currentValue) 
+        {
+          return accumulator + currentValue.x;
+        }, 0);
+    }
+
+    this.setState({sum: sum})
+  }
+
+  postEntry = (newData, foo, bar) => {
     return new Promise((resolve, reject) => {
       newData['is_asset'] = this.props.is_asset;
       try {
@@ -30,8 +43,8 @@ class Table extends Component {
       .then(response => {
         const data = this.props.entries;
         data.push(response.data);
-        this.setState({ entries: data }, () => resolve());
-        resolve();
+        this.setState({ entries: data }, 
+                      () => resolve());
       })
       .catch(error => {
         // mnaylor TODO: something about the error
@@ -57,8 +70,8 @@ class Table extends Component {
           entry['entry_id'] === response.data['entry_id']
         );
         data[location] = response.data;
-        this.setState({ entries: data }, () => resolve());
-        resolve();
+        this.setState({ entries: data }, 
+                      () => resolve());
       })
       .catch(error => {
         // mnaylor TODO: something about the error
@@ -68,39 +81,61 @@ class Table extends Component {
     })
   }
 
+  deleteEntry = (oldData) => {
+    return new Promise((resolve, reject) => {
+      axios.delete(entries_url + '/' + oldData['entry_id'])
+      .then(response => {
+        const data = this.props.entries;
+        const location = data.findIndex(entry =>
+          entry['entry_id'] === oldData['entry_id']
+        );
+        data.splice(location, 1);
+        this.setState({ entries: data }, 
+        () => resolve());
+      })
+      .catch(error => {
+        // mnaylor TODO: something about the error
+        console.log(error);
+        reject();
+      })
+    })
+  }
 
   render() {
     return (
       <MaterialTable
-        title={this.props.is_asset ? 'Assets': 'Liabilities'}
         columns={columns}
         data={this.props.entries}
         options={{
           filtering: false,
           search: false,
           sorting: false,
-          pageSize: 10
+          pageSize: 5,
+          grouping: true
         }}
         editable={{
-          onRowAdd: this.postEntry,
           onRowUpdate: this.updateEntry,
-          onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                {
-                  let data = this.state.data;
-                  const index = data.indexOf(oldData);
-                  data.splice(index, 1);
-                  this.setState({ data }, () => resolve());
-                }
-                resolve()
-              }, 1000)
-            }),
+          onRowDelete: this.deleteEntry
+        }}
+        components={{
+          Groupbar: GroupBar,
+          Toolbar: props => (
+            <div>
+             <TableToolbar title={this.props.is_asset ? 'Assets': 'Liabilities'} />
+            </div>
+          )
         }}
       />
     )
   }
 
+}
+
+function GroupBar() {
+  return (
+    <div>
+    </div>
+  );
 }
 
 export default Table;
