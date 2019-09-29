@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MaterialTable, {MTableToolbar} from "material-table";
+import MaterialTable from "material-table";
 import axios from 'axios';
 import TableToolbar from '../components/TableToolbar';
 
