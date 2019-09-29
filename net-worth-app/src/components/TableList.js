@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import Table from '../components/Table';
+import CurrencyConverter from '../components/CurrencyConverter';
 
 const entries_url = 'http://localhost:5000/entries';
 
@@ -29,6 +30,7 @@ class TableList extends Component {
     render() {
         return (
             <div>
+                <CurrencyConverter></CurrencyConverter>
                 <div>
                     <Grid container spacing={10} style={{padding: 24}}>
                         <Grid item xs>
