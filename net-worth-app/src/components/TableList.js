@@ -9,31 +9,19 @@ class TableList extends Component {
     constructor() {
         super()
         this.state = {
-            assets: [{
-                name: "Some asset",
-                category: "Savings",
-                is_asset: true,
-                amount: 1,
-                id: 0
-            }],
-            liabilities: [{
-                name: "Some liability",
-                category: "mortgage",
-                is_asset: false,
-                amount: 1,
-                id: 1
-            }],
-            searchString: ''
+            assets: [],
+            liabilities: []
         }
         this.getEntries()
     }
     
     getEntries = () => {
+        // mnaylor TODO handle error case
         axios.get(entries_url)
         .then(res => {
           const assets = res.data.filter(entry => entry['is_asset']);
           const liabilities = res.data.filter(entry => !entry['is_asset']);
-          
+
           this.setState({'assets': assets, 'liabilities': liabilities});
         })
     }
