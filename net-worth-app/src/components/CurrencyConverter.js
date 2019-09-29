@@ -6,12 +6,12 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from 'axios';
 
-const exchangeRateUrl = 'http://apilayer.net/api/live?access_key=6686f4cf11df150c8b06edf511020637&currencies=USD,AUD,CAD,GBP&format=1';
+const exchangeRateUrl = 'http://apilayer.net/api/live?access_key=6686f4cf11df150c8b06edf511020637&currencies=USD,AUD,CAD,NZD&format=1';
 const exchangeRateFormat = {
     'USDUSD': 'USD',
     'USDAUD': 'AUD',
     'USDCAD': 'CAD',
-    'USDGBP': 'GBP'
+    'USDNZD': 'NZD'
 }
 
 class CurrencyConverter extends Component {
@@ -48,6 +48,8 @@ class CurrencyConverter extends Component {
                             onChange={this.changeCurrency}>
                     <FormControlLabel value="USDUSD" control={<Radio />} label="USD" />
                     <FormControlLabel value="USDCAD" control={<Radio />} label="CAD" />
+                    <FormControlLabel value="USDAUD" control={<Radio />} label="AUD" />
+                    <FormControlLabel value="USDNZD" control={<Radio />} label="NZD" />
                 </RadioGroup>
                 </FormControl>
             </Grid>
