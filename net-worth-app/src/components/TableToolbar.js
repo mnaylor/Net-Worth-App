@@ -76,7 +76,7 @@ class TableToolbar extends Component {
 
                 <Dialog open={this.state.open} onClose={this.handleClose} 
                         aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title">New {this.props.title} Entry</DialogTitle>
+                    <DialogTitle id="form-dialog-title">New {this.props.is_asset ? 'Asset': 'Liability'} Entry</DialogTitle>
                     <DialogContent>
                         <TextField autoFocus margin="dense" name="category" label="Category" 
                                    type="string" value={this.state.category}

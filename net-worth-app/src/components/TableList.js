@@ -3,6 +3,7 @@ import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import Table from '../components/Table';
 import CurrencyConverter from '../components/CurrencyConverter';
+import { Typography } from '@material-ui/core';
 
 const entries_url = 'http://localhost:5000/entries';
 
@@ -108,24 +109,30 @@ class TableList extends Component {
 
     render() {
         return (
-            <div>
-                {this.state.sum.formatted}
-                <CurrencyConverter updateCurrency={this.updateCurrency}></CurrencyConverter>
-                <div>
-                    <Grid container spacing={10} style={{padding: 24}}>
-                        <Grid item xs>
-                            <Table entries={this.state.assets} is_asset={true} 
-                                   updateSum={this.updateSum}
-                                   exchange_rate={this.state.exchangeRate} />
-                        </Grid>
-                        <Grid item xs>
-                            <Table entries={this.state.liabilities} is_asset={false} 
-                                   updateSum={this.updateSum}
-                                   exchange_rate={this.state.exchangeRate} />
-                        </Grid>
+            <Grid container>
+                <Grid container spacing={10} style={{padding: 20}}>
+                    <Grid item xs>
+                        <Typography variant="h6">
+                            Net Worth: {this.state.sum.formatted}
+                        </Typography>
                     </Grid>
-                </div>
-            </div>
+                    <Grid item xs>
+                    <CurrencyConverter updateCurrency={this.updateCurrency}></CurrencyConverter>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={10} style={{padding: 24}}>
+                    <Grid item xs>
+                        <Table entries={this.state.assets} is_asset={true} 
+                                updateSum={this.updateSum}
+                                exchange_rate={this.state.exchangeRate} />
+                    </Grid>
+                    <Grid item xs>
+                        <Table entries={this.state.liabilities} is_asset={false} 
+                                updateSum={this.updateSum}
+                                exchange_rate={this.state.exchangeRate} />
+                    </Grid>
+                </Grid>
+            </Grid>
         )
     }
 }

@@ -172,7 +172,7 @@ class Table extends Component {
           Groupbar: GroupBar,
           Toolbar: props => (
             <div>
-             <TableToolbar is_asset={props.is_asset} postEntry={this.postEntry} 
+             <TableToolbar is_asset={this.props.is_asset} postEntry={this.postEntry} 
                            sum={this.state.sum} />
             </div>
           )
