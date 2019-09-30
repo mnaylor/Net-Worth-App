@@ -12,8 +12,6 @@ class TableList extends Component {
         this.state = {
             assets: [],
             liabilities: [],
-            sumAssets: 0,
-            sumLiabilities: 0,
             currentExchangeRate: 1
         }
         this.getEntries()
@@ -24,9 +22,7 @@ class TableList extends Component {
         this.setState({
             currentExchangeRate: exchangeRate,
             assets: this.addDisplayAmount(this.state.assets, exchangeRate),
-            liabilites: this.addDisplayAmount(this.state.liabilities, exchangeRate),
-            sumAssets: this.sumEntries(this.state.assets),
-            sumLiabilities: this.sumEntries(this.state.liabilities)
+            liabilities: this.addDisplayAmount(this.state.liabilities, exchangeRate)
         });
     }
     
@@ -47,7 +43,7 @@ class TableList extends Component {
         })
     }
 
-    sumEntries = (entries) => {
+    sumEntries = entries => {
         var sum = 0;
         if (entries) {
           sum = entries.reduce(
@@ -57,7 +53,7 @@ class TableList extends Component {
             }, 0);
         }
         return sum;
-      }
+    }
 
     addDisplayAmount = (data, multiplier) => {
         return data.map(entry => {
@@ -73,10 +69,12 @@ class TableList extends Component {
                 <div>
                     <Grid container spacing={10} style={{padding: 24}}>
                         <Grid item xs>
-                            <Table entries={this.state.assets} is_asset={true} sum={this.state.sumAssets} />
+                            <Table entries={this.state.assets} is_asset={true} 
+                                   exchange_rate={this.state.currentExchangeRate} />
                         </Grid>
                         <Grid item xs>
-                            <Table entries={this.state.liabilities} is_asset={false} sum={this.state.sumLiabilities} />
+                            <Table entries={this.state.liabilities} is_asset={false} 
+                                   exchange_rate={this.state.currentExchangeRate} />
                         </Grid>
                     </Grid>
                 </div>

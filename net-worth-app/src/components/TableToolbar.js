@@ -22,7 +22,8 @@ class TableToolbar extends Component {
         super();
         this.state = {
             open: false,
-            data: defaultData
+            data: defaultData,
+            sum: 0
           };
     }
 
@@ -89,7 +90,7 @@ class TableToolbar extends Component {
                         />
                     </DialogContent>
                     <DialogContent>
-                        <TextField margin="dense" name="amount" label="Amount" type="number"
+                        <TextField margin="dense" name="amount" label="USD Amount" type="number"
                         InputProps={{ inputProps: { min: 0, max: Number.MAX_SAFE_INTEGER } }}
                         value={this.state.amount}
                         onChange={this.handleInputChange}
