@@ -9,6 +9,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const defaultData =
     {
@@ -23,7 +25,12 @@ class TableToolbar extends Component {
         this.state = {
             open: false,
             data: defaultData,
-            sum: 0
+            sum: 0,
+            isValid: {
+                amount: true,
+                category: true,
+                name: true
+            }
           };
     }
 
@@ -42,10 +49,25 @@ class TableToolbar extends Component {
     
         var data = this.state.data;
         data[name] = value;
+        var isValid = this.isValidInput(data);
         this.setState({
-            data: data
+            data: data,
+            isValid: isValid
         });
       }
+
+    isValidInput = (data) => {
+        const maxCharLength = 50;
+        const readyForPost = data.amount >= 0 && data.amount < Number.MAX_VALUE &&
+                data.name.length > 0 && data.name.length < maxCharLength &&
+                data.category.length > 0 && data.category.length < maxCharLength;
+        return {
+            amount: data.amount >= 0 && data.amount < Number.MAX_VALUE,
+            name: data.name.length >= 0 && data.name.length <= maxCharLength,
+            category: data.category.length >= 0 && data.category.length <= maxCharLength,
+            readyForPost: readyForPost
+        }
+    }
 
     handleInput = () => {
         this.props.postEntry(this.state.data);
@@ -78,20 +100,27 @@ class TableToolbar extends Component {
                         aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">New {this.props.is_asset ? 'Asset': 'Liability'} Entry</DialogTitle>
                     <DialogContent>
-                        <TextField autoFocus margin="dense" name="category" label="Category" 
+                        <TextField autoFocus margin="dense" name="category"
                                    type="string" value={this.state.category}
                                    onChange={this.handleInputChange}
+                                   label={this.state.isValid.category ? "Category": "Less than 50 characters"}
+                                   InputProps={{ error: !this.state.isValid.category }}
                         />
                     </DialogContent>
                     <DialogContent>
-                        <TextField margin="dense" name="name" label="Name" 
+                        <TextField margin="dense" name="name"
                                    type="string" value={this.state.name}
                                    onChange={this.handleInputChange}
+                                   label={this.state.isValid.name ? "Name": "Less than 50 characters"}
+                                   InputProps={{ error: !this.state.isValid.name }}
                         />
                     </DialogContent>
                     <DialogContent>
-                        <TextField margin="dense" name="amount" label="USD Amount" type="number"
-                        InputProps={{ inputProps: { min: 0, max: Number.MAX_SAFE_INTEGER } }}
+                        <TextField margin="dense" name="amount" type="number"
+                                   label={this.state.isValid.amount ? "Amount": "Greater than 0"}
+                                   InputProps={{ inputProps: {min: 0, max: Number.MAX_SAFE_INTEGER}, error: !this.state.isValid.amount,
+                                      startAdornment: <InputAdornment position="start">USD</InputAdornment>
+                        }}
                         value={this.state.amount}
                         onChange={this.handleInputChange}
                         />
@@ -100,9 +129,14 @@ class TableToolbar extends Component {
                         <Button onClick={this.handleClose} color="primary">
                         Cancel
                         </Button>
-                        <Button onClick={this.handleInput} color="primary">
-                        Add Entry
-                        </Button>
+                        <Tooltip title="Category, Name, and Amount must have a value" aria-label="add">
+                            <span>
+                                <Button onClick={this.handleInput} color="primary"
+                                        disabled={!this.state.isValid.readyForPost}>
+                                    Add Entry
+                                </Button>
+                            </span>
+                        </Tooltip>
                     </DialogActions>
                 </Dialog>
             </div>
