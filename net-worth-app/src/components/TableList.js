@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Table from '../components/Table';
 import CurrencyConverter from '../components/CurrencyConverter';
 import { Typography } from '@material-ui/core';
+import ErrorMessage from '../components/ErrorMessage';
 
 const entries_url = 'http://localhost:5000/entries';
 
@@ -21,11 +22,22 @@ class TableList extends Component {
                 asset: 0,
                 liability: 0,
                 formatted: null
-            }
+            },
+            error: null
         }
         this.getEntries()
         this.updateSum = this.updateSum.bind(this);
         this.updateCurrency = this.updateCurrency.bind(this)
+        this.setError = this.setError.bind(this);
+        this.clearError = this.clearError.bind(this);
+    }
+
+    setError = error => {
+        this.setState({error: error});
+    }
+
+    clearError = () => {
+        this.setState({error: null});
     }
 
     updateCurrency = (name, rate) => {
@@ -86,6 +98,10 @@ class TableList extends Component {
               }
             });
         })
+        .catch(error => {
+            console.log(error);
+            this.state.setError('Failed to fetch entries.');
+        })
     }
 
     sumEntries = entries => {
@@ -109,6 +125,8 @@ class TableList extends Component {
 
     render() {
         return (
+            <div>
+            <ErrorMessage message={this.state.error} clearError={this.clearError}></ErrorMessage>
             <Grid container>
                 <Grid container spacing={10} style={{padding: 20}}>
                     <Grid item xs>
@@ -123,16 +141,17 @@ class TableList extends Component {
                 <Grid container spacing={10} style={{padding: 24}}>
                     <Grid item xs>
                         <Table entries={this.state.assets} is_asset={true} 
-                                updateSum={this.updateSum}
+                                updateSum={this.updateSum} setError={this.setError}
                                 exchange_rate={this.state.exchangeRate} />
                     </Grid>
                     <Grid item xs>
                         <Table entries={this.state.liabilities} is_asset={false} 
-                                updateSum={this.updateSum}
+                                updateSum={this.updateSum} setError={this.setError}
                                 exchange_rate={this.state.exchangeRate} />
                     </Grid>
                 </Grid>
             </Grid>
+            </div>
         )
     }
 }

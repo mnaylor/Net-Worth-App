@@ -42,7 +42,8 @@ class Table extends Component {
     super();
     this.postEntry = this.postEntry.bind(this);
     this.state = {
-      sum: 0
+      sum: 0,
+      error: null
     }
   }
 
@@ -67,7 +68,7 @@ class Table extends Component {
                       () => resolve());
       })
       .catch(error => {
-        // mnaylor TODO: something about the error
+        this.props.setError('Failed to insert entry.');
         console.log(error);
         reject();
       })
@@ -97,7 +98,7 @@ class Table extends Component {
                       () => resolve());
       })
       .catch(error => {
-        // mnaylor TODO: something about the error
+        this.props.setError('Failed to update entry.');
         console.log(error);
         reject();
       })
@@ -119,7 +120,7 @@ class Table extends Component {
         () => resolve());
       })
       .catch(error => {
-        // mnaylor TODO: something about the error
+        this.props.setError('Failed to delete entry.');
         console.log(error);
         reject();
       })
