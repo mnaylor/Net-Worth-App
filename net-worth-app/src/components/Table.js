@@ -59,6 +59,7 @@ class Table extends Component {
       axios.post(entries_url, newData)
       .then(response => {
         const data = this.props.entries;
+        response.data.display_amount = this.formatAmount(response.data.amount);
         data.push(response.data);
         var sum = this.sumEntries(data);
         this.setState({ entries: data, sum: sum }, 
@@ -84,7 +85,7 @@ class Table extends Component {
       axios.post(entries_url, newData)
       .then(response => {
         const data = this.props.entries;
-        response.data.display_amount = this.props.exchange_rate * newData.amount;
+        response.data.display_amount = this.formatAmount(response.data.amount);
         const location = data.findIndex(entry =>
           entry['entry_id'] === response.data['entry_id']
         );
@@ -128,16 +129,23 @@ class Table extends Component {
     }
   }
 
+  formatAmount = amount => {
+    return new Intl.NumberFormat('en-US', { 
+      style: 'currency', 
+      currency: this.props.exchange_rate.name 
+    }).format(amount * this.props.exchange_rate.rate);
+  }
+
   sumEntries = entries => {
     var sum = 0;
     if (entries) {
       sum = entries.reduce(
         function (accumulator, currentValue) 
         {
-          return accumulator + currentValue.display_amount;
+          return accumulator + currentValue.amount;
         }, 0);
     }
-    return sum;
+    return this.formatAmount(sum);
   }
 
   render() {

@@ -36,7 +36,8 @@ class CurrencyConverter extends Component {
 
   changeCurrency = event => {
       this.setState({currentExchange: event.target.value})
-      this.props.updateCurrency(this.state.exchangeRates[event.target.value])
+      this.props.updateCurrency(exchangeRateFormat[event.target.value], 
+                                this.state.exchangeRates[event.target.value])
   }
 
   render() {

@@ -12,17 +12,30 @@ class TableList extends Component {
         this.state = {
             assets: [],
             liabilities: [],
-            currentExchangeRate: 1
+            exchangeRate: {
+                rate: 1,
+                name: 'USD'
+            }
         }
         this.getEntries()
         this.updateCurrency = this.updateCurrency.bind(this)
     }
 
-    updateCurrency = exchangeRate => {
+    updateCurrency = (name, rate) => {
+        var exchangeRate = {
+            rate: rate,
+            name: name
+        }
         this.setState({
-            currentExchangeRate: exchangeRate,
-            assets: this.addDisplayAmount(this.state.assets, exchangeRate),
-            liabilities: this.addDisplayAmount(this.state.liabilities, exchangeRate)
+            exchangeRate: exchangeRate,
+            assets: this.state.assets.map(entry => {
+                entry['display_amount'] = this.formatAmount(entry.amount, exchangeRate);
+                return entry;
+            }),
+            liabilities: this.state.liabilities.map(entry => {
+                entry['display_amount'] = this.formatAmount(entry.amount, exchangeRate);
+                return entry;
+            })
         });
     }
     
@@ -30,7 +43,10 @@ class TableList extends Component {
         // mnaylor TODO handle error case
         axios.get(entries_url)
         .then(res => {
-          var data = this.addDisplayAmount(res.data, this.state.currentExchangeRate);
+          var data = res.data.map(entry => {
+              entry['display_amount'] = this.formatAmount(entry.amount, this.state.exchangeRate);
+              return entry;
+          });
           const assets = data.filter(entry => entry['is_asset']);
           const liabilities = data.filter(entry => !entry['is_asset']);
 
@@ -49,17 +65,17 @@ class TableList extends Component {
           sum = entries.reduce(
             function (accumulator, currentValue) 
             {
-              return accumulator + currentValue.display_amount;
+              return accumulator + currentValue.amount;
             }, 0);
         }
         return sum;
     }
 
-    addDisplayAmount = (data, multiplier) => {
-        return data.map(entry => {
-            entry['display_amount'] = entry['amount'] * multiplier;
-            return entry;
-        })
+    formatAmount = (amount, exchangeRate) => {
+        return new Intl.NumberFormat('en-US', { 
+          style: 'currency',
+          currency: exchangeRate.name
+        }).format(amount * exchangeRate.rate);
     }
 
     render() {
@@ -70,11 +86,11 @@ class TableList extends Component {
                     <Grid container spacing={10} style={{padding: 24}}>
                         <Grid item xs>
                             <Table entries={this.state.assets} is_asset={true} 
-                                   exchange_rate={this.state.currentExchangeRate} />
+                                   exchange_rate={this.state.exchangeRate} />
                         </Grid>
                         <Grid item xs>
                             <Table entries={this.state.liabilities} is_asset={false} 
-                                   exchange_rate={this.state.currentExchangeRate} />
+                                   exchange_rate={this.state.exchangeRate} />
                         </Grid>
                     </Grid>
                 </div>
