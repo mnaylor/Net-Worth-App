@@ -11,7 +11,7 @@ class TestDatabaseHandler(unittest.TestCase):
         self.assertTrue(results)
 
     def test_new_entry(self):
-        new_entry = EntryDataObject('foo', 'bar', 100)
+        new_entry = EntryDataObject('foo', 'bar', 100.35)
         result = self.db.upsert_entry(new_entry)
         self.assertTrue(result)
 

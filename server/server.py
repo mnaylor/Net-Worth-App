@@ -11,7 +11,7 @@ entry_model = api.model('Entry', {
     'name': fields.String(required=True, description='The entry name'),
     'category': fields.String(required=True, description='The entry category'),
     'is_asset': fields.Boolean(required=True, description='If asset, True, else False'),
-    'amount': fields.Integer(required=True, min=0, description='The entry amount')
+    'amount': fields.Float(required=True, min=0, description='The entry amount')
 })
 
 @api.route('/entries')
