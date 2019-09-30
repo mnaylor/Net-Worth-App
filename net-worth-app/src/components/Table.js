@@ -62,7 +62,8 @@ class Table extends Component {
         response.data.display_amount = this.formatAmount(response.data.amount);
         data.push(response.data);
         var sum = this.sumEntries(data);
-        this.setState({ entries: data, sum: sum }, 
+        this.props.updateSum(sum, this.props.is_asset)
+        this.setState({ entries: data, sum: this.formatAmount(sum) }, 
                       () => resolve());
       })
       .catch(error => {
@@ -91,7 +92,8 @@ class Table extends Component {
         );
         data[location] = response.data;
         const sum = this.sumEntries(data);
-        this.setState({ entries: data, sum: sum }, 
+        this.props.updateSum(sum, this.props.is_asset)
+        this.setState({ entries: data, sum: this.formatAmount(sum) }, 
                       () => resolve());
       })
       .catch(error => {
@@ -112,7 +114,8 @@ class Table extends Component {
         );
         data.splice(location, 1);
         var sum = this.sumEntries(data);
-        this.setState({ entries: data, sum: sum }, 
+        this.props.updateSum(sum, this.props.is_asset)
+        this.setState({ entries: data, sum: this.formatAmount(sum) }, 
         () => resolve());
       })
       .catch(error => {
@@ -125,7 +128,8 @@ class Table extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.entries !== prevProps.entries) {
-      this.setState({sum: this.sumEntries(this.props.entries)});
+      const sum = this.sumEntries(this.props.entries);
+      this.setState({sum: this.formatAmount(sum)});
     }
   }
 
@@ -145,7 +149,7 @@ class Table extends Component {
           return accumulator + currentValue.amount;
         }, 0);
     }
-    return this.formatAmount(sum);
+    return sum;
   }
 
   render() {

@@ -63,7 +63,7 @@ class TableToolbar extends Component {
                     </Grid>
                     <Grid item xs>
                         <Typography variant="h6" color="inherit">
-                            Total = {this.props.sum}
+                            {this.props.sum}
                         </Typography>
                     </Grid>
                     <Grid item xs>

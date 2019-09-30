@@ -15,9 +15,15 @@ class TableList extends Component {
             exchangeRate: {
                 rate: 1,
                 name: 'USD'
+            },
+            sum: {
+                asset: 0,
+                liability: 0,
+                formatted: null
             }
         }
         this.getEntries()
+        this.updateSum = this.updateSum.bind(this);
         this.updateCurrency = this.updateCurrency.bind(this)
     }
 
@@ -26,6 +32,7 @@ class TableList extends Component {
             rate: rate,
             name: name
         }
+        var sum = this.state.sum.asset + this.state.sum.liability;
         this.setState({
             exchangeRate: exchangeRate,
             assets: this.state.assets.map(entry => {
@@ -35,26 +42,45 @@ class TableList extends Component {
             liabilities: this.state.liabilities.map(entry => {
                 entry['display_amount'] = this.formatAmount(entry.amount, exchangeRate);
                 return entry;
-            })
+            }),
+            sum: {
+                asset: this.state.sum.asset,
+                liability: this.state.sum.liability,
+                formatted: this.formatAmount(sum, exchangeRate)
+            }
         });
+    }
+
+    updateSum = (is_asset, sum) => {
+        const key = is_asset ? 'asset': 'liability';
+        const stateSum = this.state.sum;
+        stateSum[key] = sum;
+        this.setState({sum: stateSum});
     }
     
     getEntries = () => {
         // mnaylor TODO handle error case
         axios.get(entries_url)
         .then(res => {
-          var data = res.data.map(entry => {
+          const data = res.data.map(entry => {
               entry['display_amount'] = this.formatAmount(entry.amount, this.state.exchangeRate);
               return entry;
           });
           const assets = data.filter(entry => entry['is_asset']);
           const liabilities = data.filter(entry => !entry['is_asset']);
 
+          const sumAssets = this.sumEntries(assets);
+          const sumLiabilities = this.sumEntries(liabilities);
+
           this.setState({
               'assets': assets, 
               'liabilities': liabilities,
-              'sumAssets': this.sumEntries(assets),
-              'sumLiabilities': this.sumEntries(liabilities)
+              'sum': {
+                  'asset': sumAssets,
+                  'liability': sumLiabilities,
+                  'formatted': this.formatAmount(sumAssets + sumLiabilities, 
+                                                 this.state.exchangeRate)
+              }
             });
         })
     }
@@ -81,15 +107,18 @@ class TableList extends Component {
     render() {
         return (
             <div>
+                {this.state.sum.formatted}
                 <CurrencyConverter updateCurrency={this.updateCurrency}></CurrencyConverter>
                 <div>
                     <Grid container spacing={10} style={{padding: 24}}>
                         <Grid item xs>
                             <Table entries={this.state.assets} is_asset={true} 
+                                   updateSum={this.updateSum}
                                    exchange_rate={this.state.exchangeRate} />
                         </Grid>
                         <Grid item xs>
                             <Table entries={this.state.liabilities} is_asset={false} 
+                                   updateSum={this.updateSum}
                                    exchange_rate={this.state.exchangeRate} />
                         </Grid>
                     </Grid>
