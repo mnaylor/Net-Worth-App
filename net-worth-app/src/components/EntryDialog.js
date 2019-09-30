@@ -24,7 +24,6 @@ class EntryDialog extends Component {
     constructor() {
         super();
         this.state = {
-            open: false,
             data: defaultData,
             isValid: {
                 amount: true,
@@ -61,23 +60,25 @@ class EntryDialog extends Component {
         });
       }
 
-    handleClose = () => {
-        this.setState({open: false, data: defaultData});
-    }
-
     submit = () => {
         this.props.handleInput(this.state.data);
-        this.handleClose();
+        this.props.closeDialog();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.data !== prevProps.data) {
+          this.setState({data: this.props.data});
+        }
     }
 
     render() {
         return (
-            <Dialog open={this.state.open || this.props.open} 
-                    onClose={this.props.handleClose} >
+            <Dialog open={this.props.open} 
+                    onClose={this.props.closeDialog} >
                 <DialogTitle id="form-dialog-title">New {this.props.is_asset ? 'Asset': 'Liability'} Entry</DialogTitle>
                 <DialogContent>
                     <TextField autoFocus margin="dense" name="category"
-                            type="string" value={this.state.data.category}
+                            type="string" value={this.props.data ? this.props.data.category : this.state.data.category}
                             onChange={this.handleInputChange}
                             label={this.state.isValid.category ? "Category": "Less than 50 characters"}
                             InputProps={{ error: !this.state.isValid.category }}
@@ -85,7 +86,7 @@ class EntryDialog extends Component {
                 </DialogContent>
                 <DialogContent>
                     <TextField margin="dense" name="name"
-                            type="string" value={this.state.data.name}
+                            type="string" value={this.props.data ? this.props.data.name : this.state.data.name}
                             onChange={this.handleInputChange}
                             label={this.state.isValid.name ? "Name": "Less than 50 characters"}
                             InputProps={{ error: !this.state.isValid.name }}
@@ -97,12 +98,12 @@ class EntryDialog extends Component {
                             InputProps={{ inputProps: {min: 0, max: Number.MAX_SAFE_INTEGER}, error: !this.state.isValid.amount,
                                 startAdornment: <InputAdornment position="start">USD</InputAdornment>
                     }}
-                    value={this.state.data.amount}
+                    value={this.props.data ? this.props.data.amount : this.state.data.amount}
                     onChange={this.handleInputChange}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.props.handleClose} color="primary">
+                    <Button onClick={this.props.closeDialog} color="primary">
                     Cancel
                     </Button>
                     <Tooltip title="Category, Name, and Amount must have a value" aria-label="add">

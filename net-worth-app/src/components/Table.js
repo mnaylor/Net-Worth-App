@@ -3,6 +3,7 @@ import MaterialTable from "material-table";
 import axios from 'axios';
 import TableToolbar from '../components/TableToolbar';
 import TextField from '@material-ui/core/TextField';
+import EntryDialog from '../components/EntryDialog';
 
 const columns = [
   { title: 'Name', field: 'name',
@@ -14,7 +15,11 @@ const columns = [
       onChange={e => props.onChange(e.target.value)}
       margin="normal"
     /> )},
-  { title: 'Category', field: 'category', defaultGroupOrder: 0 },
+  { title: 'Category', field: 'category', defaultGroupOrder: 0,
+    editComponent: props => (
+      <p>Edit me!</p>
+    )
+  },
   { title: 'Amount', field: 'amount', type: 'numeric',
     render: props => (
       <p>
@@ -41,7 +46,9 @@ class Table extends Component {
   constructor() {
     super();
     this.postEntry = this.postEntry.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
     this.state = {
+      open: false,
       sum: 0,
       error: null
     }
@@ -75,7 +82,7 @@ class Table extends Component {
     })
   }
 
-  updateEntry = (newData, oldData) => {
+  updateEntry = (newData) => {
     return new Promise((resolve, reject) => {
       try {
         newData['amount'] = Number(newData['amount']);
@@ -153,9 +160,24 @@ class Table extends Component {
     return sum;
   }
 
+  openDialog = (event, rowData) => {
+    this.setState({open: true, rowData: rowData});
+  }
+
+  closeDialog = () => {
+    this.setState({open: false});
+  }
+
   render() {
     return (
-      <MaterialTable
+      <div>
+        <EntryDialog open={this.state.open} 
+              handleInput={this.updateEntry}
+              closeDialog={this.closeDialog}
+              is_asset={this.props.is_asset}
+              data={this.state.rowData}
+        />
+        <MaterialTable
         columns={columns}
         data={this.props.entries}
         options={{
@@ -166,9 +188,14 @@ class Table extends Component {
           grouping: true
         }}
         editable={{
-          onRowUpdate: this.updateEntry,
           onRowDelete: this.deleteEntry
         }}
+        actions={[
+          {
+            icon: 'edit',
+            tooltip: 'Edit',
+            onClick: this.openDialog
+          }]}
         components={{
           Groupbar: GroupBar,
           Toolbar: props => (
@@ -178,7 +205,9 @@ class Table extends Component {
             </div>
           )
         }}
-      />
+        />
+      </div>
+    
     )
   }
 }

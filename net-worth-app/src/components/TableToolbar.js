@@ -20,11 +20,16 @@ class TableToolbar extends Component {
             open: false,
             sum: 0,
           };
+        this.closeDialog = this.closeDialog.bind(this);
     }
 
     handleClickOpen = () => {
         this.setState({open: true});
       }
+ 
+    closeDialog = () => {
+        this.setState({open: false});
+    }
 
     render() {
         return (
@@ -49,9 +54,9 @@ class TableToolbar extends Component {
                 </Grid>
                 <EntryDialog open={this.state.open} 
                              handleInput={this.props.postEntry}
+                             closeDialog={this.closeDialog}
                              is_asset={this.props.is_asset}
-                             >
-                </EntryDialog>
+                />
             </div>
         )
     }
