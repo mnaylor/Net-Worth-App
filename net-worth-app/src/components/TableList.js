@@ -32,7 +32,7 @@ class TableList extends Component {
             rate: rate,
             name: name
         }
-        var sum = this.state.sum.asset + this.state.sum.liability;
+        var sum = this.state.sum.asset - this.state.sum.liability;
         this.setState({
             exchangeRate: exchangeRate,
             assets: this.state.assets.map(entry => {
@@ -51,10 +51,12 @@ class TableList extends Component {
         });
     }
 
-    updateSum = (is_asset, sum) => {
+    updateSum = (sum, is_asset) => {
         const key = is_asset ? 'asset': 'liability';
         const stateSum = this.state.sum;
         stateSum[key] = sum;
+        stateSum.formatted = this.formatAmount(stateSum.asset - stateSum.liability, 
+            this.state.exchangeRate);
         this.setState({sum: stateSum});
     }
     
@@ -78,7 +80,7 @@ class TableList extends Component {
               'sum': {
                   'asset': sumAssets,
                   'liability': sumLiabilities,
-                  'formatted': this.formatAmount(sumAssets + sumLiabilities, 
+                  'formatted': this.formatAmount(sumAssets - sumLiabilities, 
                                                  this.state.exchangeRate)
               }
             });
