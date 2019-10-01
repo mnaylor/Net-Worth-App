@@ -28,11 +28,12 @@ class EntryDialog extends Component {
 
     isValidInput = (data) => {
         const maxCharLength = 50;
-        const readyForPost = data.amount >= 0 && data.amount < Number.MAX_VALUE &&
+        const readyForPost = parseFloat(data.amount) &&
+                data.amount >= 0 && data.amount < Number.MAX_VALUE &&
                 data.name.length > 0 && data.name.length < maxCharLength &&
                 data.category.length > 0 && data.category.length < maxCharLength;
         return {
-            amount: data.amount >= 0 && data.amount < Number.MAX_VALUE,
+            amount: parseFloat(data.amount) && data.amount >= 0 && data.amount < Number.MAX_VALUE,
             name: data.name.length >= 0 && data.name.length <= maxCharLength,
             category: data.category.length >= 0 && data.category.length <= maxCharLength,
             readyForPost: readyForPost
@@ -43,7 +44,7 @@ class EntryDialog extends Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
-    
+
         var data = this.state.data;
         data[name] = value;
         var isValid = this.isValidInput(data);
@@ -66,7 +67,7 @@ class EntryDialog extends Component {
 
     render() {
         return (
-            <Dialog open={this.props.open} 
+            <Dialog open={this.props.open}
                     onClose={this.props.closeDialog} >
                 <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>
                 <DialogContent>
