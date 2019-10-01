@@ -19,7 +19,7 @@ class EntryList(Resource):
     @api.marshal_list_with(entry_model)
     def get(self):
         db = DatabaseHandler()
-        return db.get_entries()
+        return db.get_entries(), 200, {'Access-Control-Allow-Origin': '*'}
 
 @api.route('/entry/<string:entry_id>')
 class EntryDelete(Resource):
@@ -27,7 +27,7 @@ class EntryDelete(Resource):
         db = DatabaseHandler()
         success = db.delete_entry(entry_id)
         if success:
-            return '', 204
+            return '', 204, {'Access-Control-Allow-Origin': '*'}
         else:
             api.abort(500, 'Server failed to upsert entry.')
 
@@ -45,7 +45,7 @@ class EntryPost(Resource):
         entry_id = db.upsert_entry(entry)
         if entry_id:
             entry.entry_id = entry_id
-            return entry.to_json(), 201
+            return entry.to_json(), 201, {'Access-Control-Allow-Origin': '*'}
         else:
             api.abort(500, 'Server failed to upsert entry.')
 
