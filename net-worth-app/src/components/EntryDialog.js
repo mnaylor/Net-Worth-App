@@ -52,10 +52,11 @@ class EntryDialog extends Component {
             data: data,
             isValid: isValid
         });
-      }
+    }
 
     submit = () => {
         this.props.handleInput(this.state.data);
+        this.setState({data: defaultData});
         this.props.closeDialog();
     }
 
