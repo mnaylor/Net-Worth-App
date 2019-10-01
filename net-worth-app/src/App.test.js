@@ -26,5 +26,16 @@ it('renders without error message', () => {
         ReactDOM.render(<App />, container);
     });
     const errorMessage = container.querySelector('#errorMessage');
-    expect(errorMessage).toBe(null);
+    expect(errorMessage).toBeNull();
+});
+
+it('can change currencies', () => {
+    act(() => {
+        ReactDOM.render(<App />, container);
+    });
+
+    const cad = container.querySelector('#usdcad');
+    act(() => {
+        cad.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+    });
 });

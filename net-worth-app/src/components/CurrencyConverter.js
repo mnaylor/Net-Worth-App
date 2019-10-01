@@ -61,7 +61,7 @@ class CurrencyConverter extends Component {
         return (
             <Grid container>
                 <Grid item xs={4}>
-                    <Button onClick={this.handleMenu}>
+                    <Button id="currencyButton" onClick={this.handleMenu}>
                         Currency: {exchangeRateFormat[this.state.currentExchange]}
                     </Button>
                 </Grid>
@@ -86,7 +86,7 @@ class CurrencyConverter extends Component {
                             <RadioGroup aria-label="currency" name="currency" value={this.state.currentExchange}
                                         onChange={this.changeCurrency}>
                                 <FormControlLabel value="USDUSD" control={<Radio />} label={"USD: " + this.state.exchangeRates['USDUSD']} />
-                                <FormControlLabel value="USDCAD" control={<Radio />} label={"CAD" + this.state.exchangeRates['USDCAD']} />
+                                <FormControlLabel id="usdcad" value="USDCAD" control={<Radio />} label={"CAD" + this.state.exchangeRates['USDCAD']} />
                                 <FormControlLabel value="USDAUD" control={<Radio />} label={"AUD: " + this.state.exchangeRates['USDAUD']} />
                                 <FormControlLabel value="USDNZD" control={<Radio />} label={"NZD" + this.state.exchangeRates['USDNZD']} />
                             </RadioGroup>

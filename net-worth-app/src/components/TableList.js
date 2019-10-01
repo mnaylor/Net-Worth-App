@@ -103,7 +103,7 @@ class TableList extends Component {
         })
         .catch(error => {
             console.log(error);
-            this.state.setError('Failed to fetch entries.');
+            this.setError('Failed to fetch entries.');
         })
     }
 
@@ -133,7 +133,7 @@ class TableList extends Component {
             <Grid container>
                 <Grid container spacing={10} style={{padding: 20}}>
                     <Grid item xs={4}>
-                        <Typography variant="h6">
+                        <Typography id="netWorth" variant="h6">
                             Net Worth: {this.state.sum.formatted}
                         </Typography>
                     </Grid>
