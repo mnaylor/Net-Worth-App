@@ -3,7 +3,7 @@ import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import Table from '../components/Table';
 import CurrencyConverter from '../components/CurrencyConverter';
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 import ErrorMessage from '../components/ErrorMessage';
 
 const entries_url = 'http://localhost:5000/entries';
@@ -68,17 +68,16 @@ class TableList extends Component {
         });
     }
 
-    updateSum = (sum, is_asset) => {
-        const key = is_asset ? 'asset': 'liability';
+    updateSum = (sum, isAsset) => {
+        const key = isAsset ? 'asset': 'liability';
         const stateSum = this.state.sum;
         stateSum[key] = sum;
-        stateSum.formatted = this.formatAmount(stateSum.asset - stateSum.liability, 
+        stateSum.formatted = this.formatAmount(stateSum.asset - stateSum.liability,
             this.state.exchangeRate);
         this.setState({sum: stateSum});
     }
-    
+
     getEntries = () => {
-        // mnaylor TODO handle error case
         axios.get(entries_url)
         .then(res => {
           const data = res.data.map(entry => {
@@ -92,12 +91,12 @@ class TableList extends Component {
           const sumLiabilities = this.sumEntries(liabilities);
 
           this.setState({
-              'assets': assets, 
+              'assets': assets,
               'liabilities': liabilities,
               'sum': {
                   'asset': sumAssets,
                   'liability': sumLiabilities,
-                  'formatted': this.formatAmount(sumAssets - sumLiabilities, 
+                  'formatted': this.formatAmount(sumAssets - sumLiabilities,
                                                  this.state.exchangeRate)
               }
             });
@@ -112,7 +111,7 @@ class TableList extends Component {
         var sum = 0;
         if (entries) {
           sum = entries.reduce(
-            function (accumulator, currentValue) 
+            function (accumulator, currentValue)
             {
               return accumulator + currentValue.amount;
             }, 0);
@@ -121,7 +120,7 @@ class TableList extends Component {
     }
 
     formatAmount = (amount, exchangeRate) => {
-        return new Intl.NumberFormat('en-US', { 
+        return new Intl.NumberFormat('en-US', {
           style: 'currency',
           currency: exchangeRate.name
         }).format(amount * exchangeRate.rate);
@@ -146,12 +145,12 @@ class TableList extends Component {
                 </Grid>
                 <Grid container spacing={10} style={{padding: 24}}>
                     <Grid item xs>
-                        <Table entries={this.state.assets} is_asset={true} 
+                        <Table entries={this.state.assets} isAsset={true}
                                 updateSum={this.updateSum} setError={this.setError}
                                 exchange_rate={this.state.exchangeRate} />
                     </Grid>
                     <Grid item xs>
-                        <Table entries={this.state.liabilities} is_asset={false} 
+                        <Table entries={this.state.liabilities} isAsset={false}
                                 updateSum={this.updateSum} setError={this.setError}
                                 exchange_rate={this.state.exchangeRate} />
                     </Grid>

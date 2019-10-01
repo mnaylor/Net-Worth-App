@@ -1,44 +1,29 @@
 import React, { Component } from 'react';
-import MaterialTable from "material-table";
+import MaterialTable from 'material-table';
 import axios from 'axios';
 import TableToolbar from '../components/TableToolbar';
-import TextField from '@material-ui/core/TextField';
 import EntryDialog from '../components/EntryDialog';
 
 const columns = [
-  { title: 'Name', field: 'name',
-  editComponent: props => (
-    <TextField
-      id="standard-name"
-      label="Name"
-      value={props.value}
-      onChange={e => props.onChange(e.target.value)}
-      margin="normal"
-    /> )},
-  { title: 'Category', field: 'category', defaultGroupOrder: 0,
-    editComponent: props => (
-      <p>Edit me!</p>
-    )
-  },
-  { title: 'Amount', field: 'amount', type: 'numeric',
-    render: props => (
-      <p>
-        {props.display_amount}
-      </p>
-    ),
-    editComponent: props => (
-      <TextField
-        id="standard-name"
-        label="USD Amount"
-        value={props.value}
-        onChange={e => props.onChange(e.target.value)}
-        margin="normal"
-        type="number"
-        InputProps={{ inputProps: { min: 0, max: Number.MAX_SAFE_INTEGER } }}
-      />
-    )
-  }
-]
+    {
+        title: 'Name',
+        field: 'name'
+    },
+    {
+        title: 'Category',
+        field: 'category',
+        defaultGroupOrder: 0
+    },
+    {
+        title: 'Amount',
+        field: 'amount',
+        type: 'numeric',
+        render: props => (
+            <p>
+              {props.display_amount}
+            </p>
+        )
+    }]
 
 const entries_url = 'http://localhost:5000/entry';
 
@@ -56,7 +41,7 @@ class Table extends Component {
 
   postEntry = (newData) => {
     return new Promise((resolve, reject) => {
-      newData['is_asset'] = this.props.is_asset;
+      newData['is_asset'] = this.props.isAsset;
       try {
         newData['amount'] = Number(newData['amount']);
       }
@@ -70,8 +55,8 @@ class Table extends Component {
         response.data.display_amount = this.formatAmount(response.data.amount);
         data.push(response.data);
         var sum = this.sumEntries(data);
-        this.props.updateSum(sum, this.props.is_asset)
-        this.setState({ entries: data, sum: this.formatAmount(sum) }, 
+        this.props.updateSum(sum, this.props.isAsset)
+        this.setState({ entries: data, sum: this.formatAmount(sum) },
                       () => resolve());
       })
       .catch(error => {
@@ -100,8 +85,8 @@ class Table extends Component {
         );
         data[location] = response.data;
         const sum = this.sumEntries(data);
-        this.props.updateSum(sum, this.props.is_asset)
-        this.setState({ entries: data, sum: this.formatAmount(sum) }, 
+        this.props.updateSum(sum, this.props.isAsset)
+        this.setState({ entries: data, sum: this.formatAmount(sum) },
                       () => resolve());
       })
       .catch(error => {
@@ -122,8 +107,8 @@ class Table extends Component {
         );
         data.splice(location, 1);
         var sum = this.sumEntries(data);
-        this.props.updateSum(sum, this.props.is_asset)
-        this.setState({ entries: data, sum: this.formatAmount(sum) }, 
+        this.props.updateSum(sum, this.props.isAsset)
+        this.setState({ entries: data, sum: this.formatAmount(sum) },
         () => resolve());
       })
       .catch(error => {
@@ -142,9 +127,9 @@ class Table extends Component {
   }
 
   formatAmount = amount => {
-    return new Intl.NumberFormat('en-US', { 
-      style: 'currency', 
-      currency: this.props.exchange_rate.name 
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: this.props.exchange_rate.name
     }).format(amount * this.props.exchange_rate.rate);
   }
 
@@ -152,7 +137,7 @@ class Table extends Component {
     var sum = 0;
     if (entries) {
       sum = entries.reduce(
-        function (accumulator, currentValue) 
+        function (accumulator, currentValue)
         {
           return accumulator + currentValue.amount;
         }, 0);
@@ -171,12 +156,12 @@ class Table extends Component {
   render() {
     return (
       <div>
-        <EntryDialog open={this.state.open} 
+        <EntryDialog open={this.state.open}
               handleInput={this.updateEntry}
               closeDialog={this.closeDialog}
-              is_asset={this.props.is_asset}
+              isAsset={this.props.isAsset}
               data={this.state.rowData}
-              title={'Update ' + (this.props.is_asset ? 'Asset': 'Liability')}
+              title={'Update ' + (this.props.isAsset ? 'Asset': 'Liability')}
         />
         <MaterialTable
         columns={columns}
@@ -201,14 +186,14 @@ class Table extends Component {
           Groupbar: GroupBar,
           Toolbar: props => (
             <div>
-             <TableToolbar is_asset={this.props.is_asset} postEntry={this.postEntry} 
+             <TableToolbar isAsset={this.props.isAsset} postEntry={this.postEntry}
                            sum={this.state.sum} />
             </div>
           )
         }}
         />
       </div>
-    
+
     )
   }
 }
