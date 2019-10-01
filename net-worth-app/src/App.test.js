@@ -1,9 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { act } from 'react-dom/test-utils';
+import App from './App.js';
+
+let container = null;
+
+beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+});
+
+afterEach(() => {
+    document.body.removeChild(container);
+    container = null;
+});
 
 it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+    act(() => {
+        ReactDOM.render(<App />, container);
+    });
+});
+
+it('renders without error message', () => {
+    act(() => {
+        ReactDOM.render(<App />, container);
+    });
+    const errorMessage = container.querySelector('#errorMessage');
+    expect(errorMessage).toBe(null);
 });

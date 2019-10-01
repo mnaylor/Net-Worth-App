@@ -12,7 +12,7 @@ function ErrorMessage(props) {
                     <Paper style={{padding: 10}}>
                         <Grid container justify="center">
                             <Grid item xs={11}>
-                                <Typography component="p">
+                                <Typography id="errorMessage" component="p">
                                     {props.message}
                                 </Typography>
                             </Grid>
