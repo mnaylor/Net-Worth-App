@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import Grid from '@material-ui/core/Grid';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from 'axios';
+import {FormControl, FormControlLabel} from '@material-ui/core/';
+import Grid from '@material-ui/core/Grid';
+import {RadioGroup, Radio} from '@material-ui/core/';
 import Typography from '@material-ui/core/Typography';
 
 const exchangeRateUrl = 'http://apilayer.net/api/live?access_key=6686f4cf11df150c8b06edf511020637&currencies=USD,AUD,CAD,NZD&format=1';
