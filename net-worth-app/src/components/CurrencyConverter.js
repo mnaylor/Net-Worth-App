@@ -5,6 +5,7 @@ import Radio from '@material-ui/core/Radio';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from 'axios';
+import Typography from '@material-ui/core/Typography';
 
 const exchangeRateUrl = 'http://apilayer.net/api/live?access_key=6686f4cf11df150c8b06edf511020637&currencies=USD,AUD,CAD,NZD&format=1';
 const exchangeRateFormat = {
@@ -27,10 +28,16 @@ class CurrencyConverter extends Component {
   getExchangeRates = () => {
     axios.get(exchangeRateUrl)
     .then(res => {
-        this.setState({exchangeRates: res.data['quotes']});
+        if (res.data.quotes) {
+            this.setState({exchangeRates: res.data['quotes']});
+        }
+        else {
+            this.props.setError('Failed to fetch currency exchange rates');
+        }
     })
     .catch(error => {
         console.log(error);
+        this.props.setError('Failed to fetch currency exchange rates');
     })
   }
 
@@ -43,7 +50,12 @@ class CurrencyConverter extends Component {
   render() {
     return (
         <Grid container>
-            <Grid item xs>
+            <Grid item xs={4}>
+                <Typography variant="h6">
+                    Display Currency:
+                </Typography>
+            </Grid>
+            <Grid item xs={8}>
                 <FormControl component="fieldset">
                 <RadioGroup row aria-label="currency" name="currency" value={this.state.currentExchange} 
                             onChange={this.changeCurrency}>

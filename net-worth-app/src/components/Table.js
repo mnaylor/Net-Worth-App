@@ -176,6 +176,7 @@ class Table extends Component {
               closeDialog={this.closeDialog}
               is_asset={this.props.is_asset}
               data={this.state.rowData}
+              title={'Update ' + (this.props.is_asset ? 'Asset': 'Liability')}
         />
         <MaterialTable
         columns={columns}

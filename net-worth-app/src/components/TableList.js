@@ -41,6 +41,10 @@ class TableList extends Component {
     }
 
     updateCurrency = (name, rate) => {
+        if (rate === undefined) {
+            this.setError('Failed to fetch currency exchange rates. Cannot convert currency');
+            return;
+        }
         var exchangeRate = {
             rate: rate,
             name: name
@@ -129,13 +133,15 @@ class TableList extends Component {
             <ErrorMessage message={this.state.error} clearError={this.clearError}></ErrorMessage>
             <Grid container>
                 <Grid container spacing={10} style={{padding: 20}}>
-                    <Grid item xs>
+                    <Grid item xs={4}>
                         <Typography variant="h6">
                             Net Worth: {this.state.sum.formatted}
                         </Typography>
                     </Grid>
-                    <Grid item xs>
-                    <CurrencyConverter updateCurrency={this.updateCurrency}></CurrencyConverter>
+                    <Grid item xs={8}>
+                    <CurrencyConverter updateCurrency={this.updateCurrency}
+                                       setError={this.setError}
+                    />
                     </Grid>
                 </Grid>
                 <Grid container spacing={10} style={{padding: 24}}>

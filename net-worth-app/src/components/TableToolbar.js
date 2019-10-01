@@ -56,6 +56,7 @@ class TableToolbar extends Component {
                              handleInput={this.props.postEntry}
                              closeDialog={this.closeDialog}
                              is_asset={this.props.is_asset}
+                             title={'New ' + (this.props.is_asset ? 'Asset': 'Liability')}
                 />
             </div>
         )

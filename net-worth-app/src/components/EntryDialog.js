@@ -75,7 +75,7 @@ class EntryDialog extends Component {
         return (
             <Dialog open={this.props.open} 
                     onClose={this.props.closeDialog} >
-                <DialogTitle id="form-dialog-title">New {this.props.is_asset ? 'Asset': 'Liability'} Entry</DialogTitle>
+                <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>
                 <DialogContent>
                     <TextField autoFocus margin="dense" name="category"
                             type="string" value={this.props.data ? this.props.data.category : this.state.data.category}
@@ -96,7 +96,7 @@ class EntryDialog extends Component {
                     <TextField margin="dense" name="amount" type="number"
                             label={this.state.isValid.amount ? "Amount": "Greater than 0"}
                             InputProps={{ inputProps: {min: 0, max: Number.MAX_SAFE_INTEGER}, error: !this.state.isValid.amount,
-                                startAdornment: <InputAdornment position="start">USD</InputAdornment>
+                                startAdornment: <InputAdornment position="start">USD$</InputAdornment>
                     }}
                     value={this.props.data ? this.props.data.amount : this.state.data.amount}
                     onChange={this.handleInputChange}
@@ -110,7 +110,7 @@ class EntryDialog extends Component {
                         <span>
                             <Button onClick={this.submit} color="primary"
                                     disabled={!this.state.isValid.readyForPost}>
-                                Add Entry
+                                Submit
                             </Button>
                         </span>
                     </Tooltip>
