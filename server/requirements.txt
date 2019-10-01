@@ -1,3 +1,4 @@
 flask-restplus==0.13.0
+flask-cors==3.0.8
 psycopg2==2.8.3
 requests=2.22.0

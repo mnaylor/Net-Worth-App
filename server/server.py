@@ -1,9 +1,11 @@
 from flask import Flask, request
 from flask_restplus import Resource, Api, fields
+from flask_cors import CORS
 
 from database_handler import DatabaseHandler, EntryDataObject
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 entry_model = api.model('Entry', {
